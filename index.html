@@ -392,27 +392,28 @@
               document.getElementById('uploadTriggerBtn').style.display = 'block';
             }
             
-            const lTarget = document.getElementById('ledgerContent');
-            lTarget.innerHTML = "";
-            if (data.history && data.history.length > 0) {
-              let html = "";
-              for (let i = 0; i < data.history.length; i++) {
-                let p = data.history[i];
-                html += `
-                  <div class="ledger-row">
-                    <div class="ledger-flex">
-                      <span>Date Paid: ${p.date}</span>
-                      <style color="#34d399">+$${p.amount.toFixed(2)}</span>
-                    </div>
-                    <div style="font-size:12px; color:#64748b; margin-top:3px;">
-                      Method: ${p.method}
-                    </div>
-                  </div>`;
-              }
-              lTarget.innerHTML = html;
-            } else {
-              lTarget.innerHTML = '<div style="color:#64748b; font-style:italic; font-size:14px; padding:5px 0;">No past records.</div>';
-            }
+                const lTarget = document.getElementById('ledgerContent');
+    lTarget.innerHTML = "";
+    if (data.history && data.history.length > 0) {
+      let html = "";
+      for (let i = 0; i < data.history.length; i++) {
+        let p = data.history[i];
+        html += `
+          <div class="ledger-row" style="margin-bottom:12px; border-bottom:1px dashed #223; padding-bottom:8px;">
+            <div class="ledger-flex" style="display:flex; justify-content:space-between; color:#fff;">
+              <span>Date Paid: ${p.date}</span>
+              <span style="color:#34d399; font-weight:bold;">+$${Number(p.amount).toFixed(2)}</span>
+            </div>
+            <div style="font-size:12px; color:#64748b; margin-top:3px;">
+              Method: ${p.method}
+            </div>
+          </div>`;
+      }
+      lTarget.innerHTML = html;
+    } else {
+      lTarget.innerHTML = '<div style="color:#64748b; font-style:italic;">No transaction records found.</div>';
+    }
+
             document.getElementById('dashboardPage').style.display = 'block';
           } else {
             status.style.background = "#7f1d1d";
