@@ -363,7 +363,9 @@
       status.style.display = 'block';
 
       // 📡 Fetch live student rows from internal spreadsheet antenna
-      fetch(`${API_URL}?action=getStudent&name=${encodeURIComponent(n)}&invoice=${encodeURIComponent(iv)}`)
+       fetch(`${API_URL}?action=getStudent` +
+  `&name=${encodeURIComponent(n.trim().toLowerCase())}` +
+  `&invoice=${encodeURIComponent(iv.trim().toLowerCase())}`)
         .then(res => res.json())
         .then(data => {
           if (data) {
