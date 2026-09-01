@@ -465,18 +465,16 @@ const scriptUrl = API_URL;
 
         // 📡 Forward base64 payload cleanly via public POST route
   // 🎯 UPDATE YOUR FETCH STATEMENT TO LOOK EXACTLY LIKE THIS:
+// 🎯 RESTORE THIS BLOCK TO ITS ORIGINAL CLEAN LOOK:
 fetch(API_URL, {
   method: 'POST',
-  mode: 'no-cors', // 🚀 THIS IS THE FIX: Shatters the Brave browser network blockade
-  headers: {
-    'Content-Type': 'text/plain' // Must change to text/plain to allow no-cors bypass
-  },
   body: JSON.stringify({
     action: 'fetchDetails',
-    studentName: studentNameValue,    // Make sure these match your current variables
+    studentName: studentNameValue,    
     invoiceNumber: invoiceNumberValue 
   })
 })
+
 
         .then(res => res.text())
         .then(response => {
