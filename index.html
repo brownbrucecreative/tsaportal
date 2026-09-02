@@ -423,12 +423,11 @@ const scriptUrl = API_URL;
             status.style.display = 'block';
           }
         })
-        .catch(err => {
-          status.style.background = "#7f1d1d";
-          status.style.color = "#fca5a5";
-          status.innerText = "❌ Network authentication timeout error.";
-          status.style.display = 'block';
-        });
+   .catch(error => {
+    console.error("👉 REAL PORTAL ERROR:", error); // 🚀 ADD THIS EXACT LINE
+    errorMessage.textContent = "network authentication timeout error"; 
+})
+
     }
 
     function submitReceipt() {
