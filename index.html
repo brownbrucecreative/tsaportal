@@ -1,229 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TSA Student Billing Portal</title>
-  <!-- Load clean, modern UI styling component layout bases -->
   <link href="https://jsdelivr.net" rel="stylesheet">
   <style>
-    body { background-color: #0b1329; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .portal-card { background: #1c2541; border: 1px solid #3a506b; border-radius: 16px; padding: 30px; width: 100%; max-width: 480px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; }
+    body { background-color: #0b1329; color: #f8fafc; font-family: sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .portal-card { background: #1c2541; border: 1px solid #3a506b; border-radius: 16px; padding: 30px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
     .gold-text { color: #ffb703; }
-    .btn-tsa { background-color: #00b4d8; color: #0b1329; font-weight: bold; border-radius: 8px; transition: all 0.2s; border: none; }
-    .btn-tsa:hover { background-color: #90e0ef; transform: translateY(-1px); }
-    .form-control { background-color: #0b1329; border: 1px solid #3a506b; color: #f8fafc; border-radius: 8px; }
-    .form-control:focus { background-color: #0b1329; border-color: #00b4d8; color: #f8fafc; box-shadow: 0 0 0 0.25rem rgba(0, 180, 216, 0.25); }
-    .ledger-row { background: #0b1329; border: 1px solid #3a506b; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .spinner-border { width: 1.2rem; height: 1.2rem; display: inline-block; vertical-align: text-bottom; margin-right: 8px; }
+    .btn-tsa { background-color: #00b4d8; color: #0b1329; font-weight: bold; border: none; }
+    .btn-tsa:hover { background-color: #90e0ef; }
+    .form-control { background-color: #0b1329; border: 1px solid #3a506b; color: #f8fafc; }
+    .ledger-row { background: #0b1329; border: 1px solid #3a506b; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; }
   </style>
 </head>
 <body>
-
   <div class="portal-card">
-    <!-- 🏢 VIEW A: SECURE LOGIN SCREEN INTERFACE -->
+    <!-- VIEW A: LOGIN SCREEN -->
     <div id="loginView">
-      <div class="text-center mb-4">
-        <h2 class="fw-bold gold-text">TEINE'S SVA ACADEMY</h2>
-        <p class="text-muted small text-uppercase tracking-wider">Secure Payment Portal</p>
-      </div>
-      <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">STUDENT FULL NAME</label>
-        <input type="text" id="studentNameInput" class="form-control form-control-lg" placeholder="e.g. Brown Bruce">
-      </div>
-      <div class="mb-4">
-        <label class="form-label text-muted small fw-bold">INVOICE NUMBER</label>
-        <input type="text" id="invoiceNumberInput" class="form-control form-control-lg" placeholder="e.g. 2026-061">
-      </div>
-      <button class="btn btn-tsa btn-lg w-100 py-3 mb-3" onclick="handlePortalLogin()">VERIFY & VIEW BALANCE</button>
-      <div id="loginStatus" class="text-center text-danger small fw-bold mt-2"></div>
+      <div class="text-center mb-4"><h2 class="fw-bold gold-text">TEINE'S SIVA ACADEMY</h2><p class="text-muted small">Secure Payment Portal</p></div>
+      <div class="mb-3"><label class="form-label small fw-bold text-muted">STUDENT FULL NAME</label><input type="text" id="studentNameInput" class="form-control form-control-lg" placeholder="e.g. Brown Bruce"></div>
+      <div class="mb-4"><label class="form-label small fw-bold text-muted">INVOICE NUMBER</label><input type="text" id="invoiceNumberInput" class="form-control form-control-lg" placeholder="e.g. 2026-061"></div>
+      <button class="btn btn-tsa btn-lg w-100 py-3" onclick="handlePortalLogin()">VERIFY & VIEW BALANCE</button>
+      <div id="loginStatus" class="text-center small fw-bold mt-3"></div>
     </div>
 
-    <!-- 📊 VIEW B: ACTIVE STUDENT BALANCE LEDGER SCREEN -->
+    <!-- VIEW B: LEDGER SUMMARY -->
     <div id="dashboardView" style="display: none;">
-      <div class="text-center mb-4">
-        <h4 class="fw-bold gold-text">Statement Summary</h4>
-        <p class="text-muted id-label small" id="lblDisplaySummary"></p>
-      </div>
+      <div class="text-center mb-4"><h4 class="fw-bold gold-text">Statement Summary</h4><p class="text-muted small" id="lblDisplaySummary"></p></div>
       <div class="ledger-row"><span>Student:</span><strong id="displayStudent"></strong></div>
       <div class="ledger-row"><span>Class:</span><strong id="displayClass"></strong></div>
       <div class="ledger-row"><span>Total Fee:</span><strong id="displayTotal"></strong></div>
       <div class="ledger-row"><span>Total Paid:</span><strong class="text-success" id="displayPaid"></strong></div>
       <div class="ledger-row" style="background: rgba(255,183,3,0.1); border-color: #ffb703;"><span>Outstanding Balance:</span><strong class="gold-text" id="displayBalance"></strong></div>
-      
-      <button class="btn btn-tsa w-100 py-2.5 mt-3 mb-2" onclick="switchPortalView('uploadView')">Log & Upload Payment →</button>
-      <button class="btn btn-outline-secondary btn-sm w-100 mt-2 text-muted" onclick="executeSecureLogout()">Secure Logout 🔒</button>
+      <button class="btn btn-tsa w-100 py-2.5 mt-3" onclick="switchPortalView('uploadView')">Log & Upload Payment →</button>
+      <button class="btn btn-outline-secondary btn-sm w-100 mt-3 text-muted" onclick="executeSecureLogout()">Secure Logout 🔒</button>
     </div>
 
-    <!-- 📸 VIEW C: RECEIPT PROOF SCREENSHOT FILE UPLOAD SCREEN -->
+    <!-- VIEW C: FILE UPLOAD -->
     <div id="uploadView" style="display: none;">
-      <div class="mb-4">
-        <h4 class="fw-bold gold-text mb-1">Log Bank Transfer</h4>
-        <p class="text-muted small">Upload your screenshot verification receipt</p>
-      </div>
-      <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">CONFIRM AMOUNT TRANSFERRED ($)</label>
-        <input type="number" id="uploadAmountInput" class="form-control" placeholder="0.00">
-      </div>
-      <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">DATE OF PAYMENT</label>
-        <input type="date" id="uploadDateInput" class="form-control">
-      </div>
-      <div class="mb-4">
-        <label class="form-label text-muted small fw-bold">CHOOSE SCREENSHOT</label>
-        <input type="file" id="uploadFileInput" class="form-control" accept="image/*">
-      </div>
-      <button class="btn btn-tsa w-100 py-2.5 mb-2" onclick="handleReceiptUploadProcess()">Submit Payment Receipt</button>
+      <div class="mb-4"><h4 class="fw-bold gold-text mb-1">Log Bank Transfer</h4><p class="text-muted small">Upload your screenshot verification receipt</p></div>
+      <div class="mb-3"><label class="form-label small fw-bold text-muted">CONFIRM AMOUNT ($)</label><input type="number" id="uploadAmountInput" class="form-control" placeholder="0.00"></div>
+      <div class="mb-3"><label class="form-label small fw-bold text-muted">DATE OF PAYMENT</label><input type="date" id="uploadDateInput" class="form-control"></div>
+      <div class="mb-4"><label class="form-label small fw-bold text-muted">CHOOSE SCREENSHOT</label><input type="file" id="uploadFileInput" class="form-control" accept="image/*"></div>
+      <button class="btn btn-tsa w-100 py-2.5" onclick="handleReceiptUploadProcess()">Submit Payment Receipt</button>
       <button class="btn btn-outline-secondary btn-sm w-100 mt-2 text-muted" onclick="switchPortalView('dashboardView')">← Return to My Balance</button>
       <div id="uploadStatus" class="text-center small fw-bold mt-3"></div>
     </div>
   </div>
 
-  <!-- Script inclusion placeholder for Section 2 -->
+  <script>
+    // 🌐 PASTE YOUR EXACT GOOGLE APPS SCRIPT WEB APP LINK INSIDE THE QUOTES BELOW:
+    const API_URL = "PASTE_YOUR_NEW_COPIED_URL_HERE";
 
+    let activeStudentName = "", activeInvoiceNumber = "";
+    function switchPortalView(id) { document.getElementById("loginView").style.display = id==='loginView'?'block':'none'; document.getElementById("dashboardView").style.display = id==='dashboardView'?'block':'none'; document.getElementById("uploadView").style.display = id==='uploadView'?'block':'none'; }
 
-
-
-    <script>
-    // 🌐 CRITICAL: Paste your exact new Google Apps Script Web App Deployment URL here!
-    const API_URL = "https://script.google.com/macros/s/AKfycbylTZJeMPsqvDQd4nCZCo48w5mz5k7jXx20tPQSEdHYnl2PrimFIGJ0vNDOupkG8XB0/exec";
-
-    // Global session container state
-    let activeStudentName = "";
-    let activeInvoiceNumber = "";
-
-    function switchPortalView(targetId) {
-      document.getElementById("loginView").style.display = "none";
-      document.getElementById("dashboardView").style.display = "none";
-      document.getElementById("uploadView").style.display = "none";
-      document.getElementById(targetId).style.display = "block";
-    }
-
-    // 🔑 VIEW A ENGINE: SECURE PORTAL LOOKUP HANDLER
     function handlePortalLogin() {
-      const nameInp = document.getElementById("studentNameInput").value.trim();
-      const invInp = document.getElementById("invoiceNumberInput").value.trim();
-      const statusDiv = document.getElementById("loginStatus");
-
-      if (!nameInp || !invInp) {
-        statusDiv.className = "text-center text-danger small fw-bold mt-2";
-        statusDiv.innerHTML = "❌ Please enter both Student Full Name and Invoice Number.";
-        return;
-      }
-
-      statusDiv.className = "text-center text-info small fw-bold mt-2";
-      statusDiv.innerHTML = `<div class="spinner-border text-info" role="status"></div> Verifying login...`;
-
-      // Dispatch payload via clean URL query fields to ensure 100% Google Gateway compatibility
-      const targetQueryUrl = `${API_URL}?action=login&studentName=${encodeURIComponent(nameInp)}&invoiceNumber=${encodeURIComponent(invInp)}`;
-
-      fetch(targetQueryUrl, { method: "GET", mode: "cors" })
-        .then(response => {
-          if (!response.ok) throw new Error("Connection failed");
-          return response.text();
+      const name = document.getElementById("studentNameInput").value.trim();
+      const inv = document.getElementById("invoiceNumberInput").value.trim();
+      const status = document.getElementById("loginStatus");
+      if (!name || !inv) { status.className = "text-center text-danger small fw-bold mt-2"; status.innerHTML = "❌ Missing entries."; return; }
+      status.className = "text-center text-info small fw-bold mt-2"; status.innerHTML = "Verifying login...";
+      
+      const queryUrl = `${API_URL}?action=login&studentName=${encodeURIComponent(name)}&invoiceNumber=${encodeURIComponent(inv)}`;
+      fetch(queryUrl, { method: "GET", mode: "cors" })
+        .then(r => r.text())
+        .then(txt => {
+          if (txt.startsWith("ERROR") || txt.startsWith("INVALID")) throw new Error(txt);
+          const res = JSON.parse(txt);
+          activeStudentName = res.studentName; activeInvoiceNumber = res.invoiceNumber;
+          document.getElementById("displayStudent").textContent = res.studentName;
+          document.getElementById("displayClass").textContent = res.class;
+          document.getElementById("displayTotal").textContent = "$" + res.totalFees;
+          document.getElementById("displayPaid").textContent = "$" + res.amountPaid;
+          document.getElementById("displayBalance").textContent = "$" + res.remainingBalance;
+          document.getElementById("lblDisplaySummary").textContent = `Invoice #${res.invoiceNumber}`;
+          status.innerHTML = ""; switchPortalView("dashboardView");
         })
-        .then(rawText => {
-          if (rawText.startsWith("ERROR") || rawText.startsWith("INVALID")) {
-            throw new Error(rawText);
-          }
-
-          const res = JSON.parse(rawText);
-          
-          if (res.status === "success") {
-            // Lock tracking credentials for the active upload session
-            activeStudentName = res.studentName;
-            activeInvoiceNumber = res.invoiceNumber;
-
-            // Map data items straight onto view elements
-            document.getElementById("displayStudent").textContent = res.studentName;
-            document.getElementById("displayClass").textContent = res.class;
-            document.getElementById("displayTotal").textContent = "$" + res.totalFees;
-            document.getElementById("displayPaid").textContent = "$" + res.amountPaid;
-            document.getElementById("displayBalance").textContent = "$" + res.remainingBalance;
-            document.getElementById("lblDisplaySummary").textContent = `Invoice #${res.invoiceNumber}`;
-
-            statusDiv.innerHTML = "";
-            switchPortalView("dashboardView");
-          } else {
-            throw new Error("Invalid response verification packet state");
-          }
-        })
-        .catch(err => {
-          statusDiv.className = "text-center text-danger small fw-bold mt-2";
-          if (err.message.includes("mismatch")) {
-            statusDiv.innerHTML = "❌ Verification failed. Incorrect Name or Invoice Number.";
-          } else {
-            statusDiv.innerHTML = "❌ network authentication timeout error";
-          }
-          console.error("Portal Engine Intercept:", err);
-        });
+        .catch(err => { status.className = "text-center text-danger small fw-bold mt-2"; status.innerHTML = err.message.includes("mismatch") ? "❌ Incorrect credentials." : "❌ Network timeout error."; });
     }
 
-    // 📸 VIEW C ENGINE: DRIVE SCREENSHOT TRANSMISSION HANDLER
     function handleReceiptUploadProcess() {
       const amt = document.getElementById("uploadAmountInput").value.trim();
       const dt = document.getElementById("uploadDateInput").value;
       const fileEl = document.getElementById("uploadFileInput");
-      const statusDiv = document.getElementById("uploadStatus");
-
-      if (!amt || !dt || fileEl.files.length === 0) {
-        statusDiv.className = "text-center text-danger small fw-bold mt-3";
-        statusDiv.innerHTML = "❌ Please complete all fields and choose a image screenshot file.";
-        return;
-      }
-
-      statusDiv.className = "text-center text-info small fw-bold mt-3";
-      statusDiv.innerHTML = `<div class="spinner-border text-info" role="status"></div> Submitting screenshot payload...`;
-
-      const targetFile = fileEl.files[0];
+      const status = document.getElementById("uploadStatus");
+      if (!amt || !dt || fileEl.files.length === 0) { status.className = "text-center text-danger small fw-bold mt-3"; status.innerHTML = "❌ Complete all fields."; return; }
+      status.className = "text-center text-info small fw-bold mt-3"; status.innerHTML = "Uploading screenshot...";
       const reader = new FileReader();
-
       reader.onloadend = function() {
-        const rawBase64 = reader.result;
-
-        // Build data submission package
-        const payloadData = {
-          action: "uploadReceipt",
-          studentName: activeStudentName,
-          invoiceNumber: activeInvoiceNumber,
-          fileData: rawBase64,
-          amountLogged: amt,
-          dateLogged: dt
-        };
-
-        fetch(API_URL, {
-          method: "POST",
-          mode: "no-cors", // Bypasses cross-site pre-flight blockers instantly for fast uploads
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payloadData)
-        })
-        .then(() => {
-          statusDiv.className = "text-center text-success small fw-bold mt-3";
-          statusDiv.innerHTML = "🎉 Thank you for logging that payment! Our Admin team will reconcile it with accounts on our end, and once received, we will log and update your balance.";
-          
-          // Clear inputs out
-          document.getElementById("uploadAmountInput").value = "";
-          document.getElementById("uploadDateInput").value = "";
-          fileEl.value = "";
-        })
-        .catch(err => {
-          statusDiv.className = "text-center text-danger small fw-bold mt-3";
-          statusDiv.innerHTML = "❌ File submission failed. Please try again.";
-          console.error("Upload process error:", err);
-        });
+        fetch(API_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "uploadReceipt", studentName: activeStudentName, invoiceNumber: activeInvoiceNumber, fileData: reader.result, amountLogged: amt, dateLogged: dt }) })
+        .then(() => { status.className = "text-center text-success small fw-bold mt-3"; status.innerHTML = "🎉 Payment receipt logged successfully!"; document.getElementById("uploadAmountInput").value = ""; document.getElementById("uploadDateInput").value = ""; fileEl.value = ""; })
+        .catch(() => { status.className = "text-center text-danger small fw-bold mt-3"; status.innerHTML = "❌ Upload failed."; });
       };
-
-      reader.readAsDataURL(targetFile);
+      reader.readAsDataURL(fileEl.files[0]);
     }
 
-    function executeSecureLogout() {
-      activeStudentName = "";
-      activeInvoiceNumber = "";
-      document.getElementById("studentNameInput").value = "";
-      document.getElementById("invoiceNumberInput").value = "";
-      document.getElementById("loginStatus").innerHTML = "";
-      switchPortalView("loginView");
-    }
+    function executeSecureLogout() { activeStudentName = ""; activeInvoiceNumber = ""; document.getElementById("studentNameInput").value = ""; document.getElementById("invoiceNumberInput").value = ""; document.getElementById("loginStatus").innerHTML = ""; switchPortalView("loginView"); }
   </script>
 </body>
 </html>
