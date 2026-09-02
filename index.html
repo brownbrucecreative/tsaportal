@@ -463,18 +463,18 @@ const scriptUrl = API_URL;
         formData.append('amountClaimed', amtIn.value);
         formData.append('datePaid', dateIn.value);
 
-        // 📡 Forward base64 payload cleanly via public POST route
-  // 🎯 UPDATE YOUR FETCH STATEMENT TO LOOK EXACTLY LIKE THIS:
-// 🎯 RESTORE THIS BLOCK TO ITS ORIGINAL CLEAN LOOK:
+// 🎯 UPDATE YOUR PORTAL SUBMISSION FETCH LOGIC TO LOOK EXACTLY LIKE THIS:
 fetch(API_URL, {
   method: 'POST',
+  headers: {
+    'Content-Type': 'text/plain;charset=utf-8' // Crucial: Prevents browser CORS errors on Google redirects
+  },
   body: JSON.stringify({
     action: 'fetchDetails',
-    studentName: studentNameValue,    
+    studentName: studentNameValue,    // Make sure these variable names match your exact input elements
     invoiceNumber: invoiceNumberValue 
   })
 })
-
 
         .then(res => res.text())
         .then(response => {
